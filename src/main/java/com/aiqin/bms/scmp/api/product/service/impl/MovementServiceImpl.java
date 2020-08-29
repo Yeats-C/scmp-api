@@ -287,7 +287,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
-            InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
+            InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum,0);
             String inboundOderCode = inboundService.saveInbound(inboundReqSave);
             addAllocation.setInboundOderCode(inboundReqSave.getInboundOderCode());
             // 完成直接加库存。
@@ -355,7 +355,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 
             // 入库单
             //生成入库单
-            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
+            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum, 1);
             allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundReqSave.setInboundBatchList(null);
             inboundService.saveInbound(inboundReqSave);
@@ -696,7 +696,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 移库商品信息
             AllocationProduct allocationProduct = new AllocationProduct();
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
-            allocationProduct.setQuantity(detail.getQuantity());
+//            allocationProduct.setQuantity(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
             if(detail.getSkuName() == null){
                 OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
@@ -715,8 +715,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             outboundProduct = outboundProductDao.selectByLineCode(allocation1.getOutboundOderCode(), detail.getSkuCode(), detail.getLineCode());
             if(outboundProduct != null) {
                 Long actualTotalCount = detail.getQuantity();
-                Long content = outboundProduct.getOutboundBaseContent() == null ? 1L : Long.valueOf(outboundProduct.getOutboundBaseContent());
-                outboundProduct.setPraOutboundNum(actualTotalCount / content);
+//                Long content = outboundProduct.getOutboundBaseContent() == null ? 1L : Long.valueOf(outboundProduct.getOutboundBaseContent());
+                outboundProduct.setPraOutboundNum(actualTotalCount);
                 outboundProduct.setPraOutboundMainNum(actualTotalCount);
                 outboundProduct.setPraTaxPurchaseAmount(outboundProduct.getPreTaxPurchaseAmount());
                 outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).
@@ -726,8 +726,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 Integer count = outboundProductDao.update(outboundProduct);
                 LOGGER.info("更新出库单商品信息：{}", count);
 
-                praOutboundCount += outbound.getPraOutboundNum();
-                praTotalOutboundCount += outbound.getPraMainUnitNum();
+                praOutboundCount += actualTotalCount;
+                praTotalOutboundCount += actualTotalCount;
                 praTotalOutboundAmount = outbound.getPraTaxAmount().add(outboundProduct.getPraTaxAmount());
                 praOutboundAmount = outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(), outboundProduct.getTax())
                         .multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum())));
@@ -748,7 +748,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     if(count1 > 0){
                         // 更新.
                         AllocationBatchRequest aBatchRequest = allocationProductBatchMapper.selectByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
-                        AllocationBatchRequest detail = new AllocationBatchRequest();
+//                        AllocationBatchRequest detail = new AllocationBatchRequest();
+                        AllocationBatchRequest detail = BeanCopyUtils.copy(aBatchRequest, AllocationBatchRequest.class);
                         detail.setAllocationCode(allocation1.getAllocationCode());
                         Long quantity = aBatchRequest.getActualTotalCount() == null ? 0 : aBatchRequest.getActualTotalCount();
                         detail.setActualTotalCount(batch.getQuantity()+quantity);
@@ -790,7 +791,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         outboundBatch.setSupplierCode(outbound.getSupplierCode());
                         outboundBatch.setSupplierName(outbound.getSupplierName());
                         outboundBatch.setProductDate(DateUtils.currentDate());
-                        outboundBatch.setTotalCount(batch.getQuantity());
+//                        outboundBatch.setTotalCount(batch.getQuantity());
                         outboundBatch.setActualTotalCount(batch.getQuantity());
                         outboundBatch.setLineCode(batch.getLineCode());
                         outboundBatches.add(outboundBatch);
@@ -930,7 +931,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         changeStockRequest.setStockBatchList(batchList);
     }
 
-    public InboundReqSave handleTransferInbound(Allocation allocation, Map<String, OrderProductSkuResponse> productSkuMap, InboundTypeEnum inboundTypeEnum) {
+    public InboundReqSave handleTransferInbound(Allocation allocation, Map<String, OrderProductSkuResponse> productSkuMap, InboundTypeEnum inboundTypeEnum, int status) {
 //        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
 //        // 更新数据库编码尺度
 //        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
@@ -947,8 +948,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             product.setPreTaxPurchaseAmount(allocationProduct.getTaxPrice());
             product.setPreInboundMainNum(allocationProduct.getQuantity());
             product.setPreInboundNum(allocationProduct.getQuantity());
-            product.setPraInboundMainNum(allocationProduct.getQuantity());
-            product.setPraInboundNum(allocationProduct.getQuantity());
+            if(status == 0){
+                product.setPraInboundMainNum(allocationProduct.getQuantity());
+                product.setPraInboundNum(allocationProduct.getQuantity());
+            }
             //            product.setCreateBy(allocation.getCreateBy());
             product.setCreateTime(allocation.getCreateTime());
             product.setSkuCode(allocationProduct.getSkuCode());
@@ -990,7 +993,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 inboundBatchReqVo.setSupplierCode(batch.getSupplierCode());
                 inboundBatchReqVo.setSupplierName(batch.getSupplierName());
                 inboundBatchReqVo.setTotalCount(batch.getQuantity());
-                inboundBatchReqVo.setActualTotalCount(batch.getQuantity());
+                if(status == 0){
+                    inboundBatchReqVo.setActualTotalCount(batch.getQuantity());
+                }
                 inboundBatchReqVo.setLineCode(batch.getLineNum());
 //                inboundBatchReqVo.setCreateBy(allocation.getCreateBy());
 //                inboundBatchReqVo.setUpdateBy(allocation.getUpdateBy());
@@ -999,10 +1004,12 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         }
         //入库编码
         inbound.setInboundOderCode(redisCode);
-        //实际入库数量
-        inbound.setPraInboundNum(allocation.getQuantity());
-        //实际入库主数量
-        inbound.setPraMainUnitNum(allocation.getQuantity());
+        if(status == 0){
+            //实际入库数量
+            inbound.setPraInboundNum(allocation.getQuantity());
+            //实际入库主数量
+            inbound.setPraMainUnitNum(allocation.getQuantity());
+        }
         //预计入库数量
         inbound.setPreInboundNum(allocation.getQuantity());
         //预计入库主数量
