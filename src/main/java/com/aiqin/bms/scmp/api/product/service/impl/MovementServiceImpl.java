@@ -489,7 +489,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 移库商品信息
             AllocationProduct allocationProduct = new AllocationProduct();
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
-            allocationProduct.setQuantity(detail.getQuantity());
+//            allocationProduct.setQuantity(detail.getQuantity());
+            allocationProduct.setCallinActualTotalCount(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
             if(detail.getSkuName() == null){
                 OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
@@ -521,14 +522,13 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             LOGGER.info("更新入库单商品实际信息：{}" , count);
 
             // 计算入库单主表的实际值
-            praInboundNum = inbound.getPraInboundNum() + product.getPraInboundNum();
-            praMainUnitNum = inbound.getPraMainUnitNum() + product.getPraInboundMainNum();
+            praInboundNum = actualTotalCount;
+            praMainUnitNum = actualTotalCount;
             praTaxAmount = inbound.getPraTaxAmount().add(product.getPraTaxAmount());
             if(product.getTax() != null){
                 BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
                 praAmount = inbound.getPraAmount().add(amount);
             }
-
             detailLists.add(allocationProduct);
         }
 
@@ -743,6 +743,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), allocation1.getCallOutWarehouseCode(), batch.getBatchCode());
                 if (CollectionUtils.isEmpty(batchList)) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
+                    if(batch.getBatchCode() != null){
+                        AllocationProductBatch allocationProductBatch = BeanCopyUtils.copy(batch, AllocationProductBatch.class);
+                        allocationProductBatchMapper.insertSelective(allocationProductBatch);
+                    }
                 }else {
                     Integer count1 = allocationProductBatchMapper.selectCountByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
                     if(count1 > 0){
