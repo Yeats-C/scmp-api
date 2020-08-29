@@ -946,11 +946,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             product.setInboundOderCode(redisCode);
             product.setLinenum(allocationProduct.getLineNum());
             product.setPreTaxPurchaseAmount(allocationProduct.getTaxPrice());
-            product.setPreInboundMainNum(allocationProduct.getQuantity());
-            product.setPreInboundNum(allocationProduct.getQuantity());
+            product.setPreInboundMainNum(allocationProduct.getCalloutActualTotalCount());
+            product.setPreInboundNum(allocationProduct.getCalloutActualTotalCount());
             if(status == 0){
-                product.setPraInboundMainNum(allocationProduct.getQuantity());
-                product.setPraInboundNum(allocationProduct.getQuantity());
+                product.setPraInboundMainNum(allocationProduct.getCalloutActualTotalCount());
+                product.setPraInboundNum(allocationProduct.getCalloutActualTotalCount());
             }
             //            product.setCreateBy(allocation.getCreateBy());
             product.setCreateTime(allocation.getCreateTime());
@@ -1018,8 +1018,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         inbound.setInboundTypeCode(inboundTypeEnum.getCode());
         inbound.setInboundTypeName(inboundTypeEnum.getName());
         //入库状态
-        inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-        inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+        inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
         //公司编码
         inbound.setCompanyCode(allocation.getCompanyCode());
         inbound.setCompanyName(allocation.getCompanyName());

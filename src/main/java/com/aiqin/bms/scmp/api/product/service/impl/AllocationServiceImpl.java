@@ -222,14 +222,22 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         LOGGER.info("保存调拨单商品批次表数据参数{}", JsonUtil.toJson(list));
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation.getCallOutWarehouseCode());
         if (!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
-            int kp = ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
-            if (kp <= 0) {
-                log.error("调拨单sku批次数据保存失败");
-                throw new GroundRuntimeException("调拨单sku批次数据保存失败");
+            List<AllocationProductBatch> lists = new ArrayList<>();
+            for (AllocationProductBatch allocationProductBatch : list) {
+                if (allocationProductBatch.getCallOutBatchNumber() != null){
+                    AllocationProductBatch copy = BeanCopyUtils.copy(allocationProductBatch, AllocationProductBatch.class);
+                    lists.add(copy);
+                }
             }
-
-            List<StockBatchInfoRequest> batchList1 = allocationBatchTransStock(allocation, list);
-            stockChangeRequest.setStockBatchList(batchList1);
+            if(CollectionUtils.isNotEmptyCollection(lists)){
+                int kp = ((AllocationService) AopContext.currentProxy()).saveListBatch(lists);
+                if (kp <= 0) {
+                    log.error("调拨单sku批次数据保存失败");
+                    throw new GroundRuntimeException("调拨单sku批次数据保存失败");
+                }
+                List<StockBatchInfoRequest> batchList1 = allocationBatchTransStock(allocation, lists);
+                stockChangeRequest.setStockBatchList(batchList1);
+            }
         }
         List<AllocationProduct> products = productbatchTransProduct(list);
         LOGGER.info("保存调拨单商品表数据参数{}", JsonUtil.toJson(products));
