@@ -742,8 +742,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
                         stockInfo.setPreWayCount(singleCount - actualSingleCount);
                     }else {
-                        InboundProduct inboundProduct = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), product.getSkuCode(), product.getLinnum().longValue());
-                        stockInfo.setPreWayCount(inboundProduct.getPraInboundMainNum());
+                        InboundProduct inboundProduct = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(),
+                                product.getSkuCode(), product.getLinnum().longValue());
+                        stockInfo.setPreWayCount(inboundProduct.getPreInboundMainNum());
                     }
                 }
                 list.add(stockInfo);

@@ -311,8 +311,6 @@ public class InboundServiceImpl  implements InboundService {
                 // 获取编码
                 //rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
                 String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
-
-
                 inbound.setInboundOderCode(redisCode);
             }
 
@@ -332,12 +330,10 @@ public class InboundServiceImpl  implements InboundService {
                 Integer count = inboundBatchDao.insertAll(batchList);
                 log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
             }
-
             //更新编码表
             if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
                 //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
             }
-
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(),
                     ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(),

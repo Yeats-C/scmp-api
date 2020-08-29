@@ -1208,6 +1208,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        OrderInfo o = orderInfoMapper.selectByOrderCode2(orderCode);
+        if(o.getOrderStatus().equals(OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode())){
+            return HttpResponse.success(false);
+        }
         // 取消销售单
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(orderCode);
