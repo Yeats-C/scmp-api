@@ -59,6 +59,10 @@ public class OrderProductSkuResponse {
     @JsonProperty("sku_code")
     private String skuCode;
 
+    @ApiModelProperty("商品名称")
+    @JsonProperty("sku_name")
+    private String skuName;
+
     @ApiModelProperty("商品类型")
     @JsonProperty("product_type")
     private Integer productType;

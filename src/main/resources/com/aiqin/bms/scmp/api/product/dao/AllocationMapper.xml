@@ -144,8 +144,8 @@
       c.pra_main_unit_num callInQuantity,
       c.pra_tax_amount callInTotalCostRate
     from allocation a
-    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
-    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    LEFT JOIN outbound b ON a.allocation_code = b.source_oder_code
+    LEFT JOIN inbound c ON a.allocation_code = c.source_oder_code
     where a.id = #{id,jdbcType=BIGINT}
   </select>
 
@@ -799,8 +799,8 @@
     select
     <include refid="Move_Column_List"/>
     FROM allocation a
-    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
-    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    LEFT JOIN outbound b ON a.allocation_code = b.source_oder_code
+    LEFT JOIN inbound c ON a.allocation_code = c.source_oder_code
     where
     1=1
     <if test="createStartTime != null ">

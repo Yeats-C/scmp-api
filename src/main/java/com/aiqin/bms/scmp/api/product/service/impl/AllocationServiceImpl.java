@@ -287,8 +287,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             stockChangeDlRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
             stockChangeDlRequest.setWarehouseName(allocation.getCallInWarehouseName());
         }
-        stockChangeDlRequest.setOperationCode(allocation.getUpdateById());
-        stockChangeDlRequest.setOperationName(allocation.getUpdateBy());
+        stockChangeDlRequest.setOperationCode(allocation.getUpdateById() == null ? "wms推送" : allocation.getUpdateById());
+        stockChangeDlRequest.setOperationName(allocation.getUpdateBy() == null ? "wms推送" : allocation.getUpdateBy());
         // 商品数据
         List<ProductRequest> productList = new ArrayList<>();
         for (AllocationProductResVo product : products) {
@@ -297,6 +297,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productRequest.setSkuCode(product.getSkuCode());
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
+            if (Global.DL_OPERATION_TYPE_2 == stockChangeDlRequest.getOperationType()) {
+                productRequest.setActualTotalCount(product.getCallOutQuantity());
+            }else {
+                productRequest.setActualTotalCount(product.getCallInQuantity());
+            }
+
             totalCount += product.getQuantity();
             productRequest.setProductType(0);
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
@@ -305,20 +311,21 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list) && list.size() > 0) {
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list)) {
                 for (AllocationProductBatchResVo productBatch : list) {
                     if (Objects.equals(product.getSkuCode() + product.getLineNum().toString(),
                             productBatch.getSkuCode() + productBatch.getLineNum().toString())) {
                         BatchRequest batchRequest = new BatchRequest();
                         batchRequest.setLineCode(productBatch.getLineNum().intValue());
                         batchRequest.setSkuCode(productBatch.getSkuCode());
-                        if (allocation.getInboundOderCode() == null) {
+                        if (Global.DL_OPERATION_TYPE_2 == stockChangeDlRequest.getOperationType()) {
                             batchRequest.setBatchCode(productBatch.getBatchNumber());
+                            batchRequest.setActualTotalCount(productBatch.getCalloutActualTotalCount());
                         } else {
                             batchRequest.setBatchCode(productBatch.getCallInBatchNumber());
+                            batchRequest.setActualTotalCount(productBatch.getCallinActualTotalCount());
                         }
                         batchRequest.setProductDate(productBatch.getProductDate());
-                        batchRequest.setActualTotalCount(productBatch.getQuantity());
                         batchList.add(batchRequest);
                     }
                 }
