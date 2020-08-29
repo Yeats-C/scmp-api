@@ -140,9 +140,9 @@
       a.undertaking_unit_name undertakingUnitName,
       a.remark,
       b.pra_main_unit_num callOutQuantity,
-      b.pra_tax_amount callOutTotalCostRate,
+      b.pra_tax_amount callOutTaxAmount,
       c.pra_main_unit_num callInQuantity,
-      c.pra_tax_amount callInTotalCostRate
+      c.pra_tax_amount callInTaxAmount
     from allocation a
     LEFT JOIN outbound b ON a.allocation_code = b.source_oder_code
     LEFT JOIN inbound c ON a.allocation_code = c.source_oder_code

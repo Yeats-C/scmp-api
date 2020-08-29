@@ -88,7 +88,7 @@
       unit, classes, type, tax,
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
-      update_time, update_by, picture_url, line_num)
+      update_time, update_by, picture_url, line_num, callout_actual_total_count, callin_actual_total_count)
     values
     <foreach collection="list" item="t" index= "index" separator =",">
       (#{t.id,jdbcType=BIGINT},
@@ -113,7 +113,9 @@
       #{t.updateTime,jdbcType=TIMESTAMP},
       #{t.updateBy,jdbcType=VARCHAR},
       #{t.pictureUrl,jdbcType=VARCHAR},
-      #{t.lineNum,jdbcType=BIGINT}
+      #{t.lineNum,jdbcType=BIGINT},
+      #{t.calloutActualTotalCount,jdbcType=BIGINT},
+      #{t.callinActualTotalCount,jdbcType=BIGINT}
       )
     </foreach>
   </insert>
