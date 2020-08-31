@@ -47,4 +47,20 @@
      </if>
       order by id  desc limit 1
   </update>
+  <select id="selectOtherInfo" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"/>
+      from dl_other_info where
+      document_code = #{documentCode,jdbcType=VARCHAR}
+      and document_type = #{documentType,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCodes" resultMap="BaseResultMap">
+    select CONCAT(document_code, ': ', response_desc)
+      from dl_other_info
+    where document_code in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+    and document_type = #{documentType,jdbcType=INTEGER}
+    and stock_type = #{stockType,jdbcType=INTEGER}
+  </select>
 </mapper>

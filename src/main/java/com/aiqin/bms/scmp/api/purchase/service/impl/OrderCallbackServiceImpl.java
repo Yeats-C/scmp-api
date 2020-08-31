@@ -2022,7 +2022,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Override
     public HttpResponse orderDl(List<String> orderCodes) {
-        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 1);
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, Global.ORDER_TYPE, Global.ECHO_TYPE);
         for (DlOrderBill dlOrderBill : dlOrderBills) {
             String documentContent = dlOrderBill.getDocumentContent();
             LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
@@ -2046,7 +2046,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Override
     public HttpResponse orderSkuStock(List<String> orderCodes) {
         List<String> lists = new ArrayList<>();
-        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 0);
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, Global.ORDER_TYPE, Global.PUSH_TYPE);
         for (DlOrderBill dlOrderBill : dlOrderBills) {
             String documentContent = dlOrderBill.getDocumentContent();
             LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
