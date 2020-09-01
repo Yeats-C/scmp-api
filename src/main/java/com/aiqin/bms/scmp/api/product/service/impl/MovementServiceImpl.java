@@ -592,6 +592,44 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         productBatch.setActualTotalCount(batch.getQuantity());
                         productBatch.setLineCode(batch.getLineCode().intValue());
                         inboundBatchList.add(productBatch);
+                    }else {
+                        AllocationProductBatch apb = new AllocationProductBatch();
+                        productBatch = new InboundBatch();
+                        apb.setAllocationCode(allocation1.getAllocationCode());
+                        apb.setCallInBatchNumber(batch.getBatchCode());
+                        apb.setSkuCode(batch.getSkuCode());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                apb.setSkuName(orderProductSkuResponse.getProductName());
+                                productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            apb.setSkuName(batch.getSkuName());
+                            productBatch.setSkuName(batch.getSkuName());
+                        }
+                        apb.setProductDate(batch.getProductDate());
+                        apb.setCallInActualTotalCount(batch.getQuantity());
+                        apb.setQuantity(batch.getQuantity());
+                        apb.setLineNum(Long.valueOf(batch.getLineCode()));
+                        apb.setTaxPrice(batchList.get(0).getTaxCost() == null ? BigDecimal.ZERO : batchList.get(0).getTaxCost());
+                        apb.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
+                        allocationProductBatchMapper.insertSelective(apb);
+
+
+                        productBatch.setInboundOderCode(inbound.getInboundOderCode());
+                        productBatch.setBatchCode(apb.getCallInBatchNumber());
+                        productBatch.setBatchInfoCode(apb.getCallInBatchInfoCode());
+                        productBatch.setSupplierCode(inbound.getSupplierCode());
+                        productBatch.setSupplierName(inbound.getSupplierName());
+                        productBatch.setSkuCode(batch.getSkuCode());
+                        productBatch.setProductDate(batch.getProductDate());
+                        productBatch.setTotalCount(batch.getQuantity());
+                        productBatch.setActualTotalCount(batch.getQuantity());
+                        productBatch.setLineCode(batch.getLineCode().intValue());
+                        inboundBatchList.add(productBatch);
+
+                        detailBatchList.add(apb);
                     }
                 }else {
                     Integer count1 = allocationProductBatchMapper.selectCountByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
