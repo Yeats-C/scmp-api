@@ -1164,7 +1164,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             aProduct.setUpdateTime(request.getReceiptTime());
             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
             if(orderProductSku != null){
-                aProduct.setSkuName(orderProductSku.getSkuName());
+                aProduct.setSkuName(orderProductSku.getProductName());
                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                 aProduct.setSpecification(orderProductSku.getSpec());
                 aProduct.setColor(orderProductSku.getColorName());
@@ -1207,7 +1207,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                             allocationProductBatch.setSupplierCode(batchList.get(i).getSupplierCode());
                             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
                             if(orderProductSku != null){
-                                aProduct.setSkuName(orderProductSku.getSkuName());
+                                aProduct.setSkuName(orderProductSku.getProductName());
                                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                                 aProduct.setSpecification(orderProductSku.getSpec());
                                 aProduct.setColor(orderProductSku.getColorName());
@@ -1241,7 +1241,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                             allocationProductBatch.setSupplierCode(batchList.get(i).getSupplierCode());
                             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
                             if(orderProductSku != null){
-                                aProduct.setSkuName(orderProductSku.getSkuName());
+                                aProduct.setSkuName(orderProductSku.getProductName());
                                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                                 aProduct.setSpecification(orderProductSku.getSpec());
                                 aProduct.setColor(orderProductSku.getColorName());
