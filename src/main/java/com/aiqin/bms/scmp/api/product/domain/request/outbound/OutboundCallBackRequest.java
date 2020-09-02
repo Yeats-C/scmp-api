@@ -103,4 +103,12 @@ public class OutboundCallBackRequest {
     @JsonProperty("transport_code")
     private String transportCode;
 
+    @ApiModelProperty(value="是否发运 0是 1否")
+    @JsonProperty("is_shipment")
+    private Integer isShipment;
+
+    @ApiModelProperty(value="业务类型 1优选、2天猫、3小红马")
+    @JsonProperty("business_type")
+    private Integer businessType;
+
 }

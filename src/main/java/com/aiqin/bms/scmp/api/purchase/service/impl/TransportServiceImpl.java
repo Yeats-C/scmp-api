@@ -143,42 +143,44 @@ public class TransportServiceImpl implements TransportService {
         }
         transportLogMapper.insertOne(transportLog);
 
-        // 传发运参数
-        DeliveryCallBackRequest request = new DeliveryCallBackRequest();
-        request.setDeliveryCode(transport.getTransportCode());
-        request.setCustomerCode(transport.getCustomerCode());
-        request.setCustomerName(transport.getCustomerName());
-        request.setTransportDate(transport.getTransportTime());
+
+        if(transportAddRequest.getFlag() != null && transportAddRequest.getFlag().equals(1)) {
+            // 传发运参数
+            DeliveryCallBackRequest request = new DeliveryCallBackRequest();
+            request.setDeliveryCode(transport.getTransportCode());
+            request.setCustomerCode(transport.getCustomerCode());
+            request.setCustomerName(transport.getCustomerName());
+            request.setTransportDate(transport.getTransportTime());
 //            request.setTransportPerson(); // 发运人
-        request.setTransportAmount(transport.getTransportAmount());
-        request.setStandardLogisticsFee(transport.getStandardLogisticsFee());
-        request.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee());
-        request.setTransportCode(transport.getLogisticsNumber());
-        request.setTransportCompanyCode(transport.getLogisticsCompany());
-        request.setTransportCompanyName(transport.getLogisticsCompanyName());
-        request.setTransportCenterCode(transport.getTransportCenterCode());
-        request.setTransportCenterName(transport.getTransportCenterName());
-        request.setDeliverTo(transport.getDeliverTo());
-        request.setPackingNum(transport.getPackingNum());
-        request.setOrderCommodityNum(transport.getOrderCommodityNum());
-        request.setTotalVolume(transport.getTotalVolume());
-        request.setTotalWeight(transport.getTotalWeight());
-        List<DeliveryDetailRequest> detailList = new ArrayList<>();
-        List<TransportOrders> transportOrderLists = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
-        for (TransportOrders t : transportOrderLists) {
-            DeliveryDetailRequest detail = new DeliveryDetailRequest();
-            detail.setOrderCode(t.getOrderCode());
-            detail.setTransportAmount(t.getOrderAmount());
-            detailList.add(detail);
-        }
-        request.setDetailList(detailList);
-        // 推送wms 发运信息
-        log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
-        if(transportAddRequest.getFlag() != null && transportAddRequest.getFlag().equals(1)){
+            request.setTransportAmount(transport.getTransportAmount());
+            request.setStandardLogisticsFee(transport.getStandardLogisticsFee());
+            request.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee());
+            request.setTransportCode(transport.getLogisticsNumber());
+            request.setTransportCompanyCode(transport.getLogisticsCompany());
+            request.setTransportCompanyName(transport.getLogisticsCompanyName());
+            request.setTransportCenterCode(transport.getTransportCenterCode());
+            request.setTransportCenterName(transport.getTransportCenterName());
+            request.setDeliverTo(transport.getDeliverTo());
+            request.setPackingNum(transport.getPackingNum());
+            request.setOrderCommodityNum(transport.getOrderCommodityNum());
+            request.setTotalVolume(transport.getTotalVolume());
+            request.setTotalWeight(transport.getTotalWeight());
+            List<DeliveryDetailRequest> detailList = new ArrayList<>();
+            List<TransportOrders> transportOrderLists = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
+            for (TransportOrders t : transportOrderLists) {
+                DeliveryDetailRequest detail = new DeliveryDetailRequest();
+                detail.setOrderCode(t.getOrderCode());
+                detail.setTransportAmount(t.getOrderAmount());
+                detailList.add(detail);
+            }
+            request.setDetailList(detailList);
+            // 推送wms 发运信息
+            log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
             transportWmsPushJD(request);
-        }else {
-            transportWmsPush(request);
         }
+//        }else {
+//            transportWmsPush(request);
+//        }
         return HttpResponse.success();
     }
 
