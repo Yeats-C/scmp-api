@@ -422,6 +422,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(changeStockRequest.getStockList().get(0).getWarehouseCode());
+            if (!Global.BATCH_MANAGE_1.equals(warehouse.getBatchManage())){
+                changeStockRequest.setStockBatchList(null);
+            }
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
