@@ -58,6 +58,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CodeUtils;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -1651,7 +1652,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         return HttpResponse.success();
     }
 
-    public void saleInsertTransportDB(OutboundCallBackRequest request, OrderInfo response) {
+    public TransportAddRequest saleInsertTransportDB(OutboundCallBackRequest request, OrderInfo response) {
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(response.getWarehouseCode());
         TransportAddRequest transportAddRequest = new TransportAddRequest();
         transportAddRequest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
@@ -1684,6 +1685,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transportOrder.setCustomerName(response.getCustomerName());
         transportOrders.add(transportOrder);
         transportAddRequest.setOrdersList(transportOrders);
+        String code = IdSequenceUtils.getInstance().nextId()+"";
+        transportAddRequest.setTransportCode(code);
         HttpResponse response1 = transportService.saveTransport(transportAddRequest);
         if (response1.getCode().equals(MessageId.SUCCESS_CODE)) {
             LOGGER.info("生成发运单推送dl成功");
@@ -1691,6 +1694,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             LOGGER.error("生成发运单推送dl失败:{}", response1.getMessage());
             throw new GroundRuntimeException(String.format("生成发运单推送dl失败:%s{}", response1.getMessage()));
         }
+
+        return transportAddRequest;
     }
 
     public void saleInsertTransport(OutboundCallBackRequest request, OrderInfo response) {
@@ -1755,13 +1760,14 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     response.setTransportCompany(Global.TRANSPORT_COMPANY_NAME_1);
                     request.setTransportCompanyCode(Global.TRANSPORT_COMPANY_CODE_1);
                     request.setTransportCompanyName(Global.TRANSPORT_COMPANY_NAME_1);
-                    this.saleInsertTransportDB(request, response);
+                    TransportAddRequest transportAddRequest = saleInsertTransportDB(request, response);
 
                     OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
                     orderTransportRequest.setTransportCompanyCode(Global.TRANSPORT_COMPANY_CODE_1);
                     orderTransportRequest.setTransportCompanyName(Global.TRANSPORT_COMPANY_NAME_1);
                     orderTransportRequest.setTransportCompanyNumber(request.getTransportCode());
                     orderTransportRequest.setTransportCenterCode(response.getTransportCenterCode());
+                    orderTransportRequest.setTransportCode(transportAddRequest.getTransportCode());
                     List<String> orderCodes = new ArrayList<>();
                     orderCodes.add(response.getOrderCode());
                     orderTransportRequest.setOrderCodes(orderCodes);
