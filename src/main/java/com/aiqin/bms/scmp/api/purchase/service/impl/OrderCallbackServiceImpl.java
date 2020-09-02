@@ -1658,7 +1658,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transportAddRequest.setTransportCenterName(warehouse.getLogisticsCenterName());
         transportAddRequest.setWarehouseCode(warehouse.getWarehouseCode());
         transportAddRequest.setWarehouseName(warehouse.getWarehouseName());
-        transportAddRequest.setPackingNum(Long.valueOf(request.getPackingNum()));
+        transportAddRequest.setPackingNum(Long.valueOf(request.getPackingNum() == null ? 0 : request.getPackingNum()));
         transportAddRequest.setLogisticsCompany(request.getTransportCompanyCode());
         transportAddRequest.setLogisticsCompanyName(request.getTransportCompanyName());
         transportAddRequest.setLogisticsNumber(request.getTransportCode());
@@ -1678,7 +1678,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transportOrder.setWarehouseName(response.getWarehouseName());
         transportOrder.setDeliverTime(request.getDeliveryTime());
         transportOrder.setCreateTime(new Date());
-        transportOrder.setProductNum(request.getActualTotalCount().intValue());
+        Long num = request.getActualTotalCount() == null ? 0 : request.getActualTotalCount();
+        transportOrder.setProductNum(num.intValue());
         transportOrder.setCustomerCode(response.getCustomerCode());
         transportOrder.setCustomerName(response.getCustomerName());
         transportOrders.add(transportOrder);
@@ -1737,6 +1738,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     public void updateDlOrder(OutboundCallBackRequest request,OrderInfo response) {
         // dl主表信息
         EchoOrderRequest echoOrderRequest = new EchoOrderRequest();
+        List<OrderTransportRequest> logisticsList = new ArrayList<>();
         if(request.getFlag().equals(2)){
             // flag标识状态在2的情况下，属于德邦销售回传，调用发运接口
             if (Global.HN_XSH_CODE.equals(response.getWarehouseCode()) || Global.HN_TMK_CODE.equals(response.getWarehouseCode())) {
@@ -1763,6 +1765,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     List<String> orderCodes = new ArrayList<>();
                     orderCodes.add(response.getOrderCode());
                     orderTransportRequest.setOrderCodes(orderCodes);
+                    logisticsList.add(orderTransportRequest);
                 }else {
                     echoOrderRequest.setIsShipment(1);
                 }
@@ -1770,7 +1773,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 echoOrderRequest.setIsShipment(1);
             }
         }
-
+        echoOrderRequest.setLogisticsList(logisticsList);
         echoOrderRequest.setOrderCode(request.getOderCode());
         echoOrderRequest.setOperationTime(request.getDeliveryTime());
         echoOrderRequest.setOperationType(3);
