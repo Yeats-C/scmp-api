@@ -435,14 +435,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     }
                     response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal(rejectCount).setScale(4, BigDecimal.ROUND_HALF_UP)));
                     if (rejectApplyDetailHandleResponse.getStockCount() < rejectCount) {
-                        response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
+                        response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量：{}， sku：{}",i, record[0]));
                     }
                     if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
                         String key = this.rejectBatch(response, rejectApply);
                         response.setBatchList(rejectApply.get(key));
                     }
                 } else {
-                    response.setErrorInfo(String.format("第%d行,未查询到对应的商品",i));
+                    response.setErrorInfo(String.format("第%d行,未查询到对应的商品：{}， sku：{}",i, record[0]));
                 }
                 list.add(response);
             }

@@ -90,4 +90,18 @@
 			group by c.synchr_time desc limit 1)
      group by a.sku_code,a.batch_code,b.wms_warehouse_id
   </select>
+  <select id="stockDaySum" resultMap="BaseResultMap">
+     select sku_code, warehouse_code,sum(batch_count) batch_count, wms_type
+     from stock_day_batch
+     where batch_count > 0 and
+     synchr_time in
+      <foreach collection="list" separator="," item="item" open="(" close=")">
+        #{item}
+      </foreach>
+     group by sku_code,warehouse_code
+  </select>
+  <select id="stockBySynchrTime" resultType="java.lang.String">
+    SELECT synchr_time FROM stock_day_batch
+    WHERE id IN (SELECT max(id) FROM stock_day_batch GROUP BY synchr_time);
+  </select>
 </mapper>

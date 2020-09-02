@@ -49,7 +49,7 @@ public interface StockDao {
 
     List<Stock> stockByWarehouseAndSku(@Param("stockList") List<StockInfoRequest> stockList);
 
-    void updateBatch(@Param("stocks") List<Stock> stocks);
+    Integer updateBatch(@Param("stocks") List<Stock> stocks);
 
     List<Stock> selectGroup();
 

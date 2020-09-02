@@ -24,4 +24,7 @@ public interface StockDayBatchDao {
 
     List<MonthStockRequest> stockDayByDl(@Param("wmsType")Integer wmsType, @Param("warehouseCode")String warehouseCode);
 
+    List<StockDayBatch> stockDaySum(@Param("list") List<String> list);
+
+    List<String> stockBySynchrTime();
 }
