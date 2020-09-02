@@ -363,6 +363,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(changeStockRequest.getStockList().get(0).getWarehouseCode());
+            if (!Global.BATCH_MANAGE_1.equals(warehouse.getBatchManage())){
+                changeStockRequest.setStockBatchList(null);
+            }
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
@@ -418,6 +422,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(changeStockRequest.getStockList().get(0).getWarehouseCode());
+            if (!Global.BATCH_MANAGE_1.equals(warehouse.getBatchManage())){
+                changeStockRequest.setStockBatchList(null);
+            }
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
@@ -592,6 +600,43 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         productBatch.setActualTotalCount(batch.getQuantity());
                         productBatch.setLineCode(batch.getLineCode().intValue());
                         inboundBatchList.add(productBatch);
+                    }else {
+                        AllocationProductBatch apb = new AllocationProductBatch();
+                        productBatch = new InboundBatch();
+                        apb.setAllocationCode(allocation1.getAllocationCode());
+                        apb.setCallInBatchNumber(batch.getBatchCode());
+                        apb.setSkuCode(batch.getSkuCode());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                apb.setSkuName(orderProductSkuResponse.getProductName());
+                                productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                apb.setTax(orderProductSkuResponse.getTax() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
+                            }
+                        }else {
+                            apb.setSkuName(batch.getSkuName());
+                            productBatch.setSkuName(batch.getSkuName());
+                        }
+                        apb.setProductDate(batch.getProductDate());
+                        apb.setCallInActualTotalCount(batch.getQuantity());
+                        apb.setQuantity(batch.getQuantity());
+                        apb.setLineNum(Long.valueOf(batch.getLineCode()));
+                        allocationProductBatchMapper.insertSelective(apb);
+
+
+                        productBatch.setInboundOderCode(inbound.getInboundOderCode());
+                        productBatch.setBatchCode(apb.getCallInBatchNumber());
+                        productBatch.setBatchInfoCode(apb.getCallInBatchInfoCode());
+                        productBatch.setSupplierCode(inbound.getSupplierCode());
+                        productBatch.setSupplierName(inbound.getSupplierName());
+                        productBatch.setSkuCode(batch.getSkuCode());
+                        productBatch.setProductDate(batch.getProductDate());
+                        productBatch.setTotalCount(batch.getQuantity());
+                        productBatch.setActualTotalCount(batch.getQuantity());
+                        productBatch.setLineCode(batch.getLineCode().intValue());
+                        inboundBatchList.add(productBatch);
+
+                        detailBatchList.add(apb);
                     }
                 }else {
                     Integer count1 = allocationProductBatchMapper.selectCountByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
@@ -1164,7 +1209,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             aProduct.setUpdateTime(request.getReceiptTime());
             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
             if(orderProductSku != null){
-                aProduct.setSkuName(orderProductSku.getSkuName());
+                aProduct.setSkuName(orderProductSku.getProductName());
                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                 aProduct.setSpecification(orderProductSku.getSpec());
                 aProduct.setColor(orderProductSku.getColorName());
@@ -1207,7 +1252,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                             allocationProductBatch.setSupplierCode(batchList.get(i).getSupplierCode());
                             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
                             if(orderProductSku != null){
-                                aProduct.setSkuName(orderProductSku.getSkuName());
+                                aProduct.setSkuName(orderProductSku.getProductName());
                                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                                 aProduct.setSpecification(orderProductSku.getSpec());
                                 aProduct.setColor(orderProductSku.getColorName());
@@ -1241,7 +1286,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                             allocationProductBatch.setSupplierCode(batchList.get(i).getSupplierCode());
                             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
                             if(orderProductSku != null){
-                                aProduct.setSkuName(orderProductSku.getSkuName());
+                                aProduct.setSkuName(orderProductSku.getProductName());
                                 aProduct.setPictureUrl(orderProductSku.getPictureUrl());
                                 aProduct.setSpecification(orderProductSku.getSpec());
                                 aProduct.setColor(orderProductSku.getColorName());

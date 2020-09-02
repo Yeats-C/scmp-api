@@ -262,4 +262,10 @@ public class StockController {
 //    public HttpResponse importStockBatch1(MultipartFile file) {
 //        return stockService.importStockBatch1(file);
 //    }
+
+    @PostMapping("/manual/stock")
+    @ApiOperation("手动调用同步德邦/京东库存")
+    public HttpResponse manualStock() {
+        return stockService.manualStock();
+    }
 }

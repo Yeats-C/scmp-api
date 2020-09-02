@@ -104,4 +104,6 @@ public interface StockService {
     HttpResponse importStock1(MultipartFile file);
 
     HttpResponse importStockBatch1(MultipartFile file);
+
+    HttpResponse manualStock();
 }

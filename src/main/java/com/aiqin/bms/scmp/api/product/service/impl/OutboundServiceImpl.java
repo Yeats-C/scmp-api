@@ -334,8 +334,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             LOGGER.info("退供出库单传入wms成功");
             return HttpResponse.success();
         } else {
-            LOGGER.error("退供出库单传入wms失败:{}", response.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "操作退供单调用WMS失败"));
+            LOGGER.error("退供出库单传入wms失败! 退供单号：{}， 错误信息：{}", outbound.getOutboundOderCode(), response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, response.getMessage()));
         }
     }
 

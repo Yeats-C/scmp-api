@@ -45,8 +45,20 @@ public class EchoOrderRequest {
     @JsonProperty("business_form")
     private Integer businessForm;
 
+    @ApiModelProperty(value="是否发运 0是 1否")
+    @JsonProperty("is_shipment")
+    private Integer isShipment;
+
+    @ApiModelProperty(value="业务类型 1优选、2天猫、3小红马")
+    @JsonProperty("business_type")
+    private Integer businessType;
+
     @ApiModelProperty(value="商品信息")
     @JsonProperty("product_list")
     private List<ProductRequest> productList;
+
+    @ApiModelProperty(value="商品信息")
+    @JsonProperty("logistics_list")
+    private List<OrderTransportRequest> logisticsList;
 
 }

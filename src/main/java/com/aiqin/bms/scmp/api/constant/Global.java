@@ -152,6 +152,11 @@ public final class Global {
     public static final String HN_CODE = "1084";
     public static final String HZ_CODE = "1085";
 
+    /**
+     * 库房编码
+     */
+    public static final String HN_XSH_CODE = "1075";
+    public static final String HN_TMK_CODE = "1076";
 
     /**
      * 库房类型
@@ -344,5 +349,46 @@ public final class Global {
      */
     public static final Integer NOT_SYNCHR = 0;
     public static final Integer SYNCHR = 1;
+
+    /**
+     * 渠道编码 （1.爱亲科技 2.萌贝树 3.小红马 4.爱亲母婴 5.熙耘）
+     */
+    public static final String CHANNEL_CODE_1 = "1";
+    public static final String CHANNEL_CODE_2 = "2";
+    public static final String CHANNEL_CODE_3 = "3";
+    public static final String CHANNEL_CODE_4 = "4";
+    public static final String CHANNEL_CODE_5 = "5";
+
+    /**
+     * 订单业务形式 （1.门店业务 2.批发业务 3.线上业务 4.线下业务 5.优选业务 6.天猫业务）
+     */
+    public static final Integer BUSINESS_FORM_1 = 1;
+    public static final Integer BUSINESS_FORM_2 = 2;
+    public static final Integer BUSINESS_FORM_3 = 3;
+    public static final Integer BUSINESS_FORM_4 = 4;
+    public static final Integer BUSINESS_FORM_5 = 5;
+    public static final Integer BUSINESS_FORM_6 = 6;
+
+    /**
+     * 物流公司编码 （1.韵达物流 2.安能物流 3.百世快运 4.百世快递 5.中通快运 6.德邦物流 7.京东快递）
+     */
+    public static final String TRANSPORT_COMPANY_CODE_1 = "102502";
+    public static final String TRANSPORT_COMPANY_CODE_2 = "102507";
+    public static final String TRANSPORT_COMPANY_CODE_3 = "100202";
+    public static final String TRANSPORT_COMPANY_CODE_4 = "100201";
+    public static final String TRANSPORT_COMPANY_CODE_5 = "102602";
+    public static final String TRANSPORT_COMPANY_CODE_6 = "100400";
+    public static final String TRANSPORT_COMPANY_CODE_7 = "101001";
+
+    /**
+     * 物流公司名称 （1.韵达物流 2.安能物流 3.百世快运 4.百世快递 5.中通快运 6.德邦物流 7.京东快递）
+     */
+    public static final String TRANSPORT_COMPANY_NAME_1 = "韵达物流";
+    public static final String TRANSPORT_COMPANY_NAME_2 = "安能物流";
+    public static final String TRANSPORT_COMPANY_NAME_3 = "百世快运";
+    public static final String TRANSPORT_COMPANY_NAME_4 = "百世快递";
+    public static final String TRANSPORT_COMPANY_NAME_5 = "中通快运";
+    public static final String TRANSPORT_COMPANY_NAME_6 = "德邦物流";
+    public static final String TRANSPORT_COMPANY_NAME_7 = "京东快递";
 
 }

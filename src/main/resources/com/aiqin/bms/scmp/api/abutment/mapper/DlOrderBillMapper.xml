@@ -65,7 +65,10 @@
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
-    and business_type  = #{type}
+    and document_type = #{documentType,jdbcType=INTEGER}
+    <if test="businessType != null">
+      and business_type = #{businessType,jdbcType=INTEGER}
+    </if>
   </select>
   <select id="pullOrderDl" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>

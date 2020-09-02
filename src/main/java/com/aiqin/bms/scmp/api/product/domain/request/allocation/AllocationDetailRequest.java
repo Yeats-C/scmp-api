@@ -17,6 +17,10 @@ public class AllocationDetailRequest {
     @JsonProperty("actual_amount")
     private BigDecimal actualAmount;
 
+    @ApiModelProperty(value="wms 传回来的sku编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
     @ApiModelProperty(value="行号")
     @JsonProperty("line_code")
     private Integer lineCode;

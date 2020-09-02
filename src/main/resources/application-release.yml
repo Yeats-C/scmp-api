@@ -32,7 +32,7 @@ wms2:
   url: http://wmsa.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=7500&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    url: jdbc:mysql://sntygqgk356nvryuuf80-rw4rm.rwlb.rds.aliyuncs.com/bms_scmp?connectTimeout=7500&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: scmp_write
     password: YEc4I3xxMshnj1giGxxv2A
     initial-size: 5

@@ -1636,7 +1636,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         } else if (Objects.equals(oi.getPlatformType(), Global.PLATFORM_TYPE_1)) {
             // 调用dl的接口 回传销售单的发货等信息
             LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + JsonUtil.toJson(request));
-            this.updateDlOrder(request);
+            this.updateDlOrder(request, response);
         } else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM, oi.getPlatformType());
         }
@@ -1649,6 +1649,48 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 调用sap 传送销售单的数据给sap
         //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
+    }
+
+    public void saleInsertTransportDB(OutboundCallBackRequest request, OrderInfo response) {
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(response.getWarehouseCode());
+        TransportAddRequest transportAddRequest = new TransportAddRequest();
+        transportAddRequest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+        transportAddRequest.setTransportCenterName(warehouse.getLogisticsCenterName());
+        transportAddRequest.setWarehouseCode(warehouse.getWarehouseCode());
+        transportAddRequest.setWarehouseName(warehouse.getWarehouseName());
+        transportAddRequest.setPackingNum(Long.valueOf(request.getPackingNum() == null ? 0 : request.getPackingNum()));
+        transportAddRequest.setLogisticsCompany(request.getTransportCompanyCode());
+        transportAddRequest.setLogisticsCompanyName(request.getTransportCompanyName());
+        transportAddRequest.setLogisticsNumber(request.getTransportCode());
+        transportAddRequest.setTotalWeight(request.getTotalWeight());
+        transportAddRequest.setFlag(request.getFlag());
+
+        List<TransportOrders> transportOrders = new ArrayList<>();
+        TransportOrders transportOrder = new TransportOrders();
+        transportOrder.setOrderCode(response.getOrderCode());
+        transportOrder.setCommodityAmount(response.getProductTotalAmount());
+        transportOrder.setOrderAmount(response.getOrderAmount());
+        transportOrder.setStatus(response.getOrderStatus());
+        transportOrder.setType(Integer.valueOf(response.getOrderTypeCode()));
+        transportOrder.setTransportCenterCode(response.getTransportCenterCode());
+        transportOrder.setTransportCenterName(response.getTransportCenterName());
+        transportOrder.setWarehouseCode(response.getWarehouseCode());
+        transportOrder.setWarehouseName(response.getWarehouseName());
+        transportOrder.setDeliverTime(request.getDeliveryTime());
+        transportOrder.setCreateTime(new Date());
+        Long num = request.getActualTotalCount() == null ? 0 : request.getActualTotalCount();
+        transportOrder.setProductNum(num.intValue());
+        transportOrder.setCustomerCode(response.getCustomerCode());
+        transportOrder.setCustomerName(response.getCustomerName());
+        transportOrders.add(transportOrder);
+        transportAddRequest.setOrdersList(transportOrders);
+        HttpResponse response1 = transportService.saveTransport(transportAddRequest);
+        if (response1.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("生成发运单推送dl成功");
+        } else {
+            LOGGER.error("生成发运单推送dl失败:{}", response1.getMessage());
+            throw new GroundRuntimeException(String.format("生成发运单推送dl失败:%s{}", response1.getMessage()));
+        }
     }
 
     public void saleInsertTransport(OutboundCallBackRequest request, OrderInfo response) {
@@ -1693,9 +1735,45 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     }
 
     @Async
-    public void updateDlOrder(OutboundCallBackRequest request) {
+    public void updateDlOrder(OutboundCallBackRequest request,OrderInfo response) {
         // dl主表信息
         EchoOrderRequest echoOrderRequest = new EchoOrderRequest();
+        List<OrderTransportRequest> logisticsList = new ArrayList<>();
+        if(request.getFlag().equals(2)){
+            // flag标识状态在2的情况下，属于德邦销售回传，调用发运接口
+            if (Global.HN_XSH_CODE.equals(response.getWarehouseCode()) || Global.HN_TMK_CODE.equals(response.getWarehouseCode())) {
+                if (Global.CHANNEL_CODE_3.equals(response.getChannelCode()) || Global.BUSINESS_FORM_5.equals(response.getBusinessForm()) || Global.BUSINESS_FORM_6.equals(response.getBusinessForm())) {
+                    echoOrderRequest.setIsShipment(0);
+                    if(Global.BUSINESS_FORM_5.equals(response.getBusinessForm())){
+                        echoOrderRequest.setBusinessType(1);
+                    }else if (Global.BUSINESS_FORM_6.equals(response.getBusinessForm())){
+                        echoOrderRequest.setBusinessType(2);
+                    }else if (Global.CHANNEL_CODE_3.equals(response.getChannelCode())){
+                        echoOrderRequest.setBusinessType(3);
+                    }
+                    response.setTransportCompanyCode(Global.TRANSPORT_COMPANY_CODE_1);
+                    response.setTransportCompany(Global.TRANSPORT_COMPANY_NAME_1);
+                    request.setTransportCompanyCode(Global.TRANSPORT_COMPANY_CODE_1);
+                    request.setTransportCompanyName(Global.TRANSPORT_COMPANY_NAME_1);
+                    this.saleInsertTransportDB(request, response);
+
+                    OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
+                    orderTransportRequest.setTransportCompanyCode(Global.TRANSPORT_COMPANY_CODE_1);
+                    orderTransportRequest.setTransportCompanyName(Global.TRANSPORT_COMPANY_NAME_1);
+                    orderTransportRequest.setTransportCompanyNumber(request.getTransportCode());
+                    orderTransportRequest.setTransportCenterCode(response.getTransportCenterCode());
+                    List<String> orderCodes = new ArrayList<>();
+                    orderCodes.add(response.getOrderCode());
+                    orderTransportRequest.setOrderCodes(orderCodes);
+                    logisticsList.add(orderTransportRequest);
+                }else {
+                    echoOrderRequest.setIsShipment(1);
+                }
+            }else {
+                echoOrderRequest.setIsShipment(1);
+            }
+        }
+        echoOrderRequest.setLogisticsList(logisticsList);
         echoOrderRequest.setOrderCode(request.getOderCode());
         echoOrderRequest.setOperationTime(request.getDeliveryTime());
         echoOrderRequest.setOperationType(3);
@@ -2022,7 +2100,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Override
     public HttpResponse orderDl(List<String> orderCodes) {
-        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 1);
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, Global.ORDER_TYPE, Global.ECHO_TYPE);
         for (DlOrderBill dlOrderBill : dlOrderBills) {
             String documentContent = dlOrderBill.getDocumentContent();
             LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
@@ -2046,7 +2124,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Override
     public HttpResponse orderSkuStock(List<String> orderCodes) {
         List<String> lists = new ArrayList<>();
-        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 0);
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, Global.ORDER_TYPE, Global.PUSH_TYPE);
         for (DlOrderBill dlOrderBill : dlOrderBills) {
             String documentContent = dlOrderBill.getDocumentContent();
             LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));

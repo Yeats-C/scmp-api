@@ -673,6 +673,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stock.setUnitName(skuStockInfo.getUnitName());
                     if (stock != null) {
                         adds.add(stock);
+                        if(stockMap.get(stock.getSkuCode() + stock.getWarehouseCode()) == null){
+                            stockMap.put(stock.getSkuCode() + stock.getWarehouseCode(), stock);
+                        }
                     } else {
                         flage = true;
                         break;
@@ -1972,6 +1975,88 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             e.printStackTrace();
             LOGGER.error("导入DL批次库存数据失败:{}", e.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL批次库存数据失败"));
+        }
+
+        return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse manualStock(){
+
+        List<Stock> addStock = Lists.newArrayList();
+        List<Stock> updateStock = Lists.newArrayList();
+
+        // 查询京东和德邦的最后时间戳
+        List<String> list = stockDayBatchDao.stockBySynchrTime();
+        // 查询日期库存数据
+        List<StockDayBatch> dayBatchDbs = stockDayBatchDao.stockDaySum(list);
+        if(CollectionUtils.isNotEmpty(dayBatchDbs)){
+            Stock stock;
+            WarehouseDTO warehouse;
+            for (StockDayBatch dayBatch : dayBatchDbs){
+                // 查询对应sku和库房的库存
+                stock = stockDao.selectAvailableCountBySkuCode(dayBatch.getSkuCode(), null, dayBatch.getWarehouseCode());
+                if(stock != null){
+                    // 比较库存大小
+                    if(dayBatch.getBatchCount() <= stock.getInventoryCount()){
+                        continue;
+                    }
+                    Long count = dayBatch.getBatchCount() - stock.getInventoryCount();
+                    stock.setInventoryCount(stock.getInventoryCount() + count);
+                    stock.setAvailableCount(stock.getAvailableCount() + count);
+                    updateStock.add(stock);
+                }else {
+                    String regex = ".*[a-zA-z].*";
+                    boolean result = dayBatch.getSkuCode().matches(regex);
+                    if(result){
+                        continue;
+                    }
+                    warehouse = warehouseDao.getWarehouseByCode(dayBatch.getWarehouseCode());
+                    // 新增库存记录
+                    stock  = new Stock();
+                    stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+                    stock.setCompanyCode(Global.COMPANY_09);
+                    stock.setCompanyName(Global.COMPANY_09_NAME);
+                    stock.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                    stock.setTransportCenterName(warehouse.getLogisticsCenterName());
+                    stock.setWarehouseCode(warehouse.getWarehouseCode());
+                    stock.setWarehouseName(warehouse.getWarehouseName());
+                    stock.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
+                    stock.setSkuCode(dayBatch.getSkuCode());
+                    // 查询sku库存信息
+                    ProductSkuStockInfo skuStockInfo = productSkuStockInfoDao.getBySkuCode(dayBatch.getSkuCode());
+                    if(skuStockInfo != null){
+                        stock.setSkuName(skuStockInfo.getProductSkuName());
+                        stock.setUnitCode(skuStockInfo.getUnitCode());
+                        stock.setUnitName(skuStockInfo.getUnitName());
+                    }
+                    stock.setInventoryCount(dayBatch.getBatchCount());
+                    stock.setAvailableCount(dayBatch.getBatchCount());
+                    stock.setLockCount(0L);
+                    stock.setPurchaseWayCount(100000L);
+                    stock.setAllocationWayCount(100000L);
+                    stock.setTotalWayCount(100000L);
+                    stock.setNewPurchasePrice(BigDecimal.ZERO);
+                    stock.setTaxRate(BigDecimal.ZERO);
+                    stock.setTaxCost(BigDecimal.ZERO);
+                    stock.setCreateById("0000");
+                    stock.setCreateByName("系统生成");
+                    stock.setUseStatus(0);
+                    stock.setUpdateById("0000");
+                    stock.setUpdateByName("系统生成");
+                    addStock.add(stock);
+                }
+            }
+        }
+        if(CollectionUtils.isNotEmpty(addStock)){
+            Integer count = stockDao.insertBatch(addStock);
+            LOGGER.info("新增耘链未查询德邦、京东库存记录：{}", count);
+
+        }
+
+        if (CollectionUtils.isNotEmpty(updateStock)){
+            Integer count = stockDao.updateBatch(updateStock);
+            LOGGER.info("修改耘链库存小于德邦、京东库存记录：{}", count);
         }
 
         return HttpResponse.success();

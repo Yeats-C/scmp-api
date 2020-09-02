@@ -706,9 +706,20 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getStatus());
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
         int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+        // 更新调拨批次商品
+        List<AllocationDetailRequest> detailList = request.getDetailList();
+        for (AllocationDetailRequest a: detailList) {
+            AllocationProduct allocationProduct = new AllocationProduct();
+            allocationProduct.setAllocationCode(request.getAllocationCode());
+            allocationProduct.setSkuCode(a.getSkuCode());
+            allocationProduct.setLineNum(Long.valueOf(a.getLineCode()));
+            allocationProduct.setCalloutActualTotalCount(a.getActualCount());
+            allocationProductMapper.updateQuantityBySkuCodeAndSource(allocationProduct);
+        }
+
         // 查看调拨单批次商品信息
         List<AllocationBatchRequest> batchList = request.getBatchList();
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0) {
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList)) {
             for (AllocationBatchRequest detail : batchList) {
                 Integer count1 = allocationProductBatchMapper.selectCountByCode(request.getAllocationCode(), detail.getSkuCode(), detail.getBatchCode());
                 if (count1 > 0) {
