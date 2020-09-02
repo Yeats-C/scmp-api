@@ -353,11 +353,11 @@ public final class Global {
     /**
      * 渠道编码 （1.爱亲科技 2.萌贝树 3.小红马 4.爱亲母婴 5.熙耘）
      */
-    public static final Integer CHANNEL_CODE_1 = 1;
-    public static final Integer CHANNEL_CODE_2 = 2;
-    public static final Integer CHANNEL_CODE_3 = 3;
-    public static final Integer CHANNEL_CODE_4 = 4;
-    public static final Integer CHANNEL_CODE_5 = 5;
+    public static final String CHANNEL_CODE_1 = "1";
+    public static final String CHANNEL_CODE_2 = "2";
+    public static final String CHANNEL_CODE_3 = "3";
+    public static final String CHANNEL_CODE_4 = "4";
+    public static final String CHANNEL_CODE_5 = "5";
 
     /**
      * 订单业务形式 （1.门店业务 2.批发业务 3.线上业务 4.线下业务 5.优选业务 6.天猫业务）

@@ -125,7 +125,11 @@ public class TransportServiceImpl implements TransportService {
         transport.setCustomerName(orderInfo.getCustomerName());
         transport.setConsigneePhone(orderInfo.getConsigneePhone());
         transport.setDetailedAddress(orderInfo.getDetailAddress());
-        transport.setStatus(1);//设置未发运状态
+        if(transportAddRequest.getFlag() != null && transportAddRequest.getFlag().equals(2)) {
+            transport.setStatus(2);
+        }else {
+            transport.setStatus(1);//设置未发运状态
+        }
         transport.setTransportAmount(new BigDecimal(transportAmount).add(transport.getLogisticsFee()));
         transport.setOrderCommodityNum(orderCommodityNum);
         transport.setZip(orderInfo.getZipCode());
