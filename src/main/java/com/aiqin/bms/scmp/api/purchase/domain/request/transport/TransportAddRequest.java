@@ -79,6 +79,10 @@ public class TransportAddRequest {
 //    @JsonProperty("order_commodity_num")
     private Long orderCommodityNum;
 
+    @ApiModelProperty("运输单号(发运单号)")
+//    @JsonProperty("transport_code")
+    private String transportCode;
+
     @ApiModelProperty("第三方wms标记(1:京东)")
 //    @JsonProperty("flag")
     private Integer flag;

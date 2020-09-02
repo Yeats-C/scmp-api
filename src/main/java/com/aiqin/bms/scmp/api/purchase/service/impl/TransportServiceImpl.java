@@ -93,13 +93,16 @@ public class TransportServiceImpl implements TransportService {
     public HttpResponse saveTransport(TransportAddRequest transportAddRequest) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         Transport transport=new Transport();
-        //获取一个运输单号
-        String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
         transport.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : transport.getAdditionalLogisticsFee());
         transport.setStandardLogisticsFee(transport.getStandardLogisticsFee() == null ? BigDecimal.ZERO : transport.getStandardLogisticsFee());
         transport.setLogisticsFee(transport.getAdditionalLogisticsFee().add(transport.getStandardLogisticsFee()));
-        transport.setTransportCode(code);
+        if(transport.getTransportCode() == null){
+            //获取一个运输单号
+            String code = IdSequenceUtils.getInstance().nextId()+"";
+            transport.setTransportCode(code);
+        }
+
         if(currentAuthToken != null){
             transport.setCreateBy(currentAuthToken.getPersonName());
             transport.setUpdateBy(currentAuthToken.getPersonName());
@@ -108,7 +111,7 @@ public class TransportServiceImpl implements TransportService {
         Long transportAmount = 0L;
         Long orderCommodityNum = 0L;
         for (TransportOrders  transportOrder: transportOrders) {
-            transportOrder.setTransportCode(code);
+            transportOrder.setTransportCode(transport.getTransportCode());
             if(currentAuthToken != null){
                 transportOrder.setCreateBy(currentAuthToken.getPersonName());
                 transportOrder.setUpdateBy(currentAuthToken.getPersonName());
@@ -137,7 +140,7 @@ public class TransportServiceImpl implements TransportService {
         transportOrdersMapper.insertBatch(transportOrders);
         //写入发运单创建日志
         TransportLog transportLog=new TransportLog();
-        transportLog.setTransportCode(code);
+        transportLog.setTransportCode(transport.getTransportCode());
         transportLog.setType("新增");
         transportLog.setContent("新增发运单");
         transportLog.setRemark(transport.getRemark());

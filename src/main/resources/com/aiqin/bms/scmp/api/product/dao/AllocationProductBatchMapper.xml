@@ -580,5 +580,6 @@
     where a.inbound_oder_code= #{inboundOderCode,jdbcType=VARCHAR}
     and c.sku_code = #{skuCode,jdbcType=VARCHAR}
     and c.line_num = #{lineCode,jdbcType=BIGINT}
+    limit 1
   </select>
 </mapper>
