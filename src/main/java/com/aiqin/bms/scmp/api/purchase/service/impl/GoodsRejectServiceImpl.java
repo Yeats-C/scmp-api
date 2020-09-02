@@ -401,25 +401,25 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 record = result[i];
                 response = new RejectImportResponse();
                 if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[3])||StringUtils.isBlank(record[6])) {
-                    response.setErrorInfo(String.format("第%d行,导入的数据不全",i+1));
+                    response.setErrorInfo(String.format("第%d行,导入的数据不全，sku：" + record[0], i+1));
                     list.add(response);
                     continue;
                 }
                 supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                 if (supplier == null) {
-                    response.setErrorInfo(String.format("第%d行,未查询到供应商信息",i));
+                    response.setErrorInfo(String.format("第%d行,未查询到供应商信息，sku：" + record[0], i + 1));
                     list.add(response);
                     continue;
                 }
                 logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                 if (logisticsCenter == null) {
-                    response.setErrorInfo(String.format("第%d行,未查询到仓库信息",i));
+                    response.setErrorInfo(String.format("第%d行,未查询到仓库信息，sku：" + record[0], i + 1));
                     list.add(response);
                     continue;
                 }
                 warehouse = warehouseDao.selectByWarehouseName(record[4]);
                 if (warehouse == null) {
-                    response.setErrorInfo(String.format("第%d行,未查询到库房信息",i));
+                    response.setErrorInfo(String.format("第%d行,未查询到库房信息，sku：" + record[0], i + 1));
                     list.add(response);
                     continue;
                 }
@@ -435,14 +435,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     }
                     response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal(rejectCount).setScale(4, BigDecimal.ROUND_HALF_UP)));
                     if (rejectApplyDetailHandleResponse.getStockCount() < rejectCount) {
-                        response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量：{}， sku：{}",i, record[0]));
+                        response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量， sku：" + record[0], i + 1));
                     }
                     if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
                         String key = this.rejectBatch(response, rejectApply);
                         response.setBatchList(rejectApply.get(key));
                     }
                 } else {
-                    response.setErrorInfo(String.format("第%d行,未查询到对应的商品：{}， sku：{}",i, record[0]));
+                    response.setErrorInfo(String.format("第%d行,未查询到对应的商品，sku：" + record[0], i + 1));
                 }
                 list.add(response);
             }
