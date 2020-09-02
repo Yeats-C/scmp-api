@@ -673,6 +673,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stock.setUnitName(skuStockInfo.getUnitName());
                     if (stock != null) {
                         adds.add(stock);
+                        if(stockMap.get(stock.getSkuCode() + stock.getWarehouseCode()) == null){
+                            stockMap.put(stock.getSkuCode() + stock.getWarehouseCode(), stock);
+                        }
                     } else {
                         flage = true;
                         break;
