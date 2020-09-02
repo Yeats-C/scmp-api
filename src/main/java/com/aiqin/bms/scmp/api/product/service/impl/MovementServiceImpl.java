@@ -611,6 +611,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                             if(orderProductSkuResponse != null){
                                 apb.setSkuName(orderProductSkuResponse.getProductName());
                                 productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                apb.setTax(orderProductSkuResponse.getTax() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                             }
                         }else {
                             apb.setSkuName(batch.getSkuName());
@@ -620,8 +621,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         apb.setCallInActualTotalCount(batch.getQuantity());
                         apb.setQuantity(batch.getQuantity());
                         apb.setLineNum(Long.valueOf(batch.getLineCode()));
-                        apb.setTaxPrice(batchList.get(0).getTaxCost() == null ? BigDecimal.ZERO : batchList.get(0).getTaxCost());
-                        apb.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                         allocationProductBatchMapper.insertSelective(apb);
 
 
