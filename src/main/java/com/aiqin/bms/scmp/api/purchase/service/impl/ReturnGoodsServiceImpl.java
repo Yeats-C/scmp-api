@@ -698,12 +698,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfoInspectionItem returnBatch;
         OrderInfoItemProductBatch productBatch;
         for (InboundBatch batch : inboundBatches) {
-            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
+            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchCode(),
                     inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode(), inbound.getWarehouseCode());
-            if (returnBatchItem == null) {
-                returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(null,
-                        inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode(), inbound.getWarehouseCode());
-            }
+
             if (returnBatchItem == null) {
                 returnBatch = new ReturnOrderInfoInspectionItem();
                 returnBatch.setReturnOrderCode(inbound.getSourceOderCode());
@@ -748,7 +745,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 LOGGER.info("更新退货单对应的销售单的实际退货数量 ：{}", i);
             }
         }
-        if (CollectionUtils.isNotEmptyCollection(batchList) && batchList.size() > 0) {
+        if (CollectionUtils.isNotEmptyCollection(batchList)) {
             Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);
             LOGGER.info("添加退货单批次：{}", count);
         }
