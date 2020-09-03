@@ -79,6 +79,10 @@ public class RejectApplyQueryRequest extends PagesRequest {
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
     @ApiModelProperty(value="不需要传的参数")
     private List<PurchaseGroupVo> groupList;
 

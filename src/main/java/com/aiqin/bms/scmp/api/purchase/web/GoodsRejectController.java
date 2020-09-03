@@ -156,6 +156,7 @@ public class GoodsRejectController {
     @ApiOperation(value = "退供申请单商品查询")
     public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(
             @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam("warehouse_code") String warehouseCode,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
         LOGGER.info("退供申请单商品查询:{}", rejectApplyRecordCode);
@@ -163,6 +164,7 @@ public class GoodsRejectController {
         request.setRejectApplyRecordCode(rejectApplyRecordCode);
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
+        request.setWarehouseCode(warehouseCode);
         return goodsRejectService.selectRejectApplyProduct(request);
     }
 
@@ -170,11 +172,13 @@ public class GoodsRejectController {
     @ApiOperation(value = "退供申请单批次查询")
     public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(
             @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam("warehouse_code") String warehouseCode,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize) {
         LOGGER.info("退供申请单批次查询:{}", rejectApplyRecordCode);
         RejectApplyQueryRequest request = new RejectApplyQueryRequest();
         request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setWarehouseCode(warehouseCode);
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
         return goodsRejectService.selectRejectApplyBatch(request);

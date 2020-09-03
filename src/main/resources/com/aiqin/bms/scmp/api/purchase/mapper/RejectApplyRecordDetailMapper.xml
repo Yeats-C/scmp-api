@@ -76,6 +76,9 @@
       update_by_name, create_time, update_time, supplier_company_code, supplier_company_name
     from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
     group by sku_code, purchase_group_code, warehouse_code, settlement_method_code, supplier_code, product_type, product_amount
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
@@ -83,6 +86,9 @@
     SELECT count(1) FROM (select id
     from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
     group by sku_code, purchase_group_code, warehouse_code, settlement_method_code, supplier_code, product_type, product_amount)
     as countInfoByPage
   </select>
@@ -90,12 +96,20 @@
     select <include refid="Base_Column_List"></include>
     from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
+    and batch_code is not null
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="rejectApplyRecordBatchCount" resultType="java.lang.Integer">
     select count(1)
     from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
+    and batch_code is not null
   </select>
   <select id="rejectApplyRecordDetailByEdit" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
     select
