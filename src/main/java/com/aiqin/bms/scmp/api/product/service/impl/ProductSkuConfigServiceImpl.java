@@ -1366,7 +1366,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
                 draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
                 // 原毛利率
-                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice()) && !draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
+                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice()) && !productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                     if (productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                         draft.setRateOfMargin(new BigDecimal("100"));
                     } else {
