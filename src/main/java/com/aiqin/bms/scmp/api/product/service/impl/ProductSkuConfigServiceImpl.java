@@ -1347,8 +1347,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(draft.getProductSkuCode());
             distributionPrice = null == distributionPrice ? BigDecimal.ZERO : distributionPrice;
             // 毛利率
-            if (Objects.nonNull(draft.getTaxIncludedPrice()) && !draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
-                if (draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
+            if (Objects.nonNull(draft.getTaxIncludedPrice())) {
+                if (draft.getTaxIncludedPrice().compareTo(BigDecimal.ZERO) < 1) {
                     draft.setRateOfMargin(new BigDecimal("100"));
                 } else {
                     draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)));
@@ -1366,8 +1366,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
                 draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
                 // 原毛利率
-                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice()) && !productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
-                    if (productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
+                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice())) {
+                    if (productSkuSupplyUnit.getTaxIncludedPrice().compareTo(BigDecimal.ZERO) < 1) {
                         draft.setRateOfMargin(new BigDecimal("100"));
                     } else {
                         draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)));
