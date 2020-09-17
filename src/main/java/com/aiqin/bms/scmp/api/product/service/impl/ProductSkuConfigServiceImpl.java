@@ -1347,7 +1347,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(draft.getProductSkuCode());
             distributionPrice = null == distributionPrice ? BigDecimal.ZERO : distributionPrice;
             // 毛利率
-            if (Objects.nonNull(draft.getTaxIncludedPrice())) {
+            if (Objects.nonNull(draft.getTaxIncludedPrice()) && !draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                 if (draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                     draft.setRateOfMargin(new BigDecimal("100"));
                 } else {
@@ -1366,7 +1366,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
                 draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
                 // 原毛利率
-                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice())) {
+                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice()) && !draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                     if (productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                         draft.setRateOfMargin(new BigDecimal("100"));
                     } else {

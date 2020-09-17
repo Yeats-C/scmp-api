@@ -2102,23 +2102,24 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             skuConfigsWmsRepsVo.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
             skuConfigsWmsRepsVos.add(skuConfigsWmsRepsVo);
         }
-        productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
-        log.info("传入wms的消息为{}", JSON.toJSONString(productSkuInfoWms));
-        try {
-            StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/productInfoPush" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
-            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(productSkuInfoWms).timeout(30000);
-            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
-            });
-            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("穿入wms的sku商品信息失败，传入参数是[{}]"+JSON.toJSONString(productSkuInfoWms));
-//            log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
-        }
+        // DL - 2020-09-17 16:31 让注释去掉调用wms
+//        productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
+//        log.info("传入wms的消息为{}", JSON.toJSONString(productSkuInfoWms));
+//        try {
+//            StringBuilder url = new StringBuilder();
+//            url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/productInfoPush" );
+////            HttpClient httpClient = HttpClient.get(url.toString());
+//            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(productSkuInfoWms).timeout(30000);
+//            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
+//            });
+//            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+//                log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new Exception("穿入wms的sku商品信息失败，传入参数是[{}]"+JSON.toJSONString(productSkuInfoWms));
+////            log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
+//        }
     }
 
     private void sendWms2(ProductSkuInfoWms productSkuInfoWms) {
