@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWa
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.product.service.InspectionReportService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -106,12 +107,14 @@ public class ProductSkuController {
     @GetMapping("/inspection/report/list")
     @ApiOperation("根据销售码查询对应质检报告信息")
     public HttpResponse<List<InspectionReportRespVO>> getInspectionReportByCode(String saleCode){
+        log.info("根据销售码查询对应质检报告信息:{}", JsonUtil.toJson(saleCode));
         return inspectionReportService.getInspectionReportByCode(saleCode);
     }
 
     @PostMapping("/inspection/report/detail")
     @ApiOperation("根据生产日期和销售码查询质检信息")
     public HttpResponse<InspectionReportRespVO> getInspectionReport(@RequestBody QueryInspectionReportReqVO queryInspectionReportReqVO){
+        log.info("根据生产日期和销售码查询质检信息：{}",JsonUtil.toJson(queryInspectionReportReqVO));
         return HttpResponse.success(inspectionReportService.getInspectionReport(queryInspectionReportReqVO));
     }
 
